@@ -1,12 +1,18 @@
-import { useState, useEffect, useRef } from "react";
-import { Menu, X, FlaskConical } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
+import DogLogo from "./DogLogo";
+
+const PAW_SVG = `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="17" rx="5" ry="4"/><circle cx="7" cy="10" r="2.5"/><circle cx="17" cy="10" r="2.5"/><circle cx="4" cy="14" r="2"/><circle cx="20" cy="14" r="2"/></svg>`;
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [wiggle, setWiggle] = useState(false);
+  const logoRef = useRef<HTMLAnchorElement>(null);
+  const pawId = useRef(0);
 
   useEffect(() => {
     const onScroll = () => {
@@ -18,21 +24,30 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const [bubbles, setBubbles] = useState<{ id: number; left: number; size: number; delay: number }[]>([]);
-  const bubbleId = useRef(0);
+  const spawnPaws = useCallback(() => {
+    if (wiggle) return;
+    setWiggle(true);
+    setTimeout(() => setWiggle(false), 700);
 
-  const spawnBubbles = () => {
-    const newBubbles = Array.from({ length: 4 }, () => ({
-      id: bubbleId.current++,
-      left: 6 + Math.random() * 20, // px from left of the logo container
-      size: 3 + Math.random() * 4,
-      delay: Math.random() * 0.2,
-    }));
-    setBubbles((prev) => [...prev, ...newBubbles]);
-    setTimeout(() => {
-      setBubbles((prev) => prev.filter((b) => !newBubbles.includes(b)));
-    }, 1000);
-  };
+    const logo = logoRef.current;
+    if (!logo) return;
+
+    // Spawn 3 small paw prints trailing to the right of the logo
+    for (let i = 0; i < 3; i++) {
+      const paw = document.createElement("div");
+      paw.className = "paw-print text-indigo-400/50 dark:text-indigo-300/40";
+      paw.innerHTML = PAW_SVG;
+      paw.style.width = "12px";
+      paw.style.height = "12px";
+      paw.style.left = `${80 + i * 18}px`;
+      paw.style.top = `${4 + (i % 2 === 0 ? -3 : 3)}px`;
+      paw.style.setProperty("--paw-rot", `${-20 + i * 15}deg`);
+      paw.style.animationDelay = `${i * 0.12}s`;
+      paw.id = `paw-${pawId.current++}`;
+      logo.appendChild(paw);
+      setTimeout(() => paw.remove(), 1100);
+    }
+  }, [wiggle]);
 
   const links = [
     { label: "Features", href: "#features" },
@@ -53,23 +68,15 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="relative flex items-center gap-2.5" onMouseEnter={spawnBubbles}>
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-            <FlaskConical className="w-4.5 h-4.5 text-white" />
+        <a
+          ref={logoRef}
+          href="#"
+          className="relative flex items-center gap-2.5"
+          onMouseEnter={spawnPaws}
+        >
+          <div className={`w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center ${wiggle ? "dog-wiggle" : ""}`}>
+            <DogLogo className="w-5 h-5 text-white" />
           </div>
-          {bubbles.map((b) => (
-            <div
-              key={b.id}
-              className="bubble bg-indigo-400/60 dark:bg-indigo-300/50"
-              style={{
-                width: b.size,
-                height: b.size,
-                left: b.left,
-                bottom: 8,
-                animationDelay: `${b.delay}s`,
-              }}
-            />
-          ))}
           <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
             labradoor
           </span>

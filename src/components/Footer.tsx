@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlaskConical } from "lucide-react";
+import DogLogo from "./DogLogo";
 
 export default function Footer() {
   const [bruinFlash, setBruinFlash] = useState(false);
@@ -17,7 +17,7 @@ export default function Footer() {
           {/* Logo */}
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-              <FlaskConical className="w-4 h-4 text-white" />
+              <DogLogo className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
               labradoor
