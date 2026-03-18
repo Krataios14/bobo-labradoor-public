@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Heart, MessageCircle, Handshake } from "lucide-react";
+import ScrambleText from "./ScrambleText";
 
 const values = [
   {
@@ -24,35 +25,38 @@ const values = [
 
 export default function About() {
   return (
-    <section id="about" className="relative py-28 overflow-hidden">
-      <div className="absolute left-0 top-1/3 w-[400px] h-[400px] bg-accent-500/5 rounded-full blur-[128px]" />
-
-      <div className="relative max-w-7xl mx-auto px-6">
+    <section id="about" className="bg-gray-50 dark:bg-gray-900 py-24">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Text */}
           <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <span className="inline-block text-xs font-semibold uppercase tracking-[0.2em] text-accent-400 mb-4">
-              Who We Are
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+            <ScrambleText
+              text="Who We Are"
+              className="text-sm font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400 mb-4 inline-block"
+            />
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
               By UCLA researchers,{" "}
-              <span className="gradient-text">for UCLA research.</span>
+              <span className="text-indigo-600 dark:text-indigo-400">
+                for UCLA research.
+              </span>
             </h2>
-            <div className="space-y-4 text-slate-400 leading-relaxed">
+            <div className="space-y-4 text-gray-500 dark:text-gray-400 leading-relaxed">
               <p>
                 Labradoor was created by UCLA student researchers who{" "}
-                <strong className="text-slate-200">experienced firsthand</strong>{" "}
+                <strong className="text-gray-900 dark:text-gray-100 font-medium">
+                  experienced firsthand
+                </strong>{" "}
                 the challenges of the undergraduate research recruitment process
                 at UCLA.
               </p>
               <p>
                 Our mission is to empower UCLA labs with{" "}
-                <strong className="text-slate-200">
+                <strong className="text-gray-900 dark:text-gray-100 font-medium">
                   efficient, user-friendly tools
                 </strong>{" "}
                 that streamline the recruitment process, allowing researchers to
@@ -67,33 +71,29 @@ export default function About() {
 
           {/* Value cards */}
           <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="space-y-4"
           >
-            {values.map((v, i) => (
-              <motion.div
+            {values.map((v) => (
+              <div
                 key={v.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.15 * i }}
-                className="group flex gap-5 p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10 transition-all"
+                className="flex gap-5 bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50 rounded-xl p-5 hover:shadow-sm dark:hover:border-gray-600 transition-all duration-200"
               >
-                <div className="w-11 h-11 shrink-0 rounded-xl bg-accent-500/10 border border-accent-500/20 flex items-center justify-center group-hover:bg-accent-500/15 transition-colors">
-                  <v.icon className="w-5 h-5 text-accent-400" />
+                <div className="w-10 h-10 shrink-0 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg flex items-center justify-center">
+                  <v.icon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-white mb-1">
+                  <h3 className="text-gray-900 dark:text-gray-100 font-semibold mb-1">
                     {v.title}
                   </h3>
-                  <p className="text-sm text-slate-400 leading-relaxed">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                     {v.description}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </motion.div>
         </div>

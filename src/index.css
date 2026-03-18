@@ -1,95 +1,133 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-
-  --color-navy-50: #eef2ff;
-  --color-navy-100: #dce4ff;
-  --color-navy-200: #b9c9ff;
-  --color-navy-300: #8ba6ff;
-  --color-navy-400: #5b7cff;
-  --color-navy-500: #3b5bdb;
-  --color-navy-600: #2b44b0;
-  --color-navy-700: #1e3185;
-  --color-navy-800: #141f5c;
-  --color-navy-900: #0c1338;
-  --color-navy-950: #070a1f;
-
-  --color-accent-400: #818cf8;
-  --color-accent-500: #6366f1;
-  --color-accent-600: #4f46e5;
-
-  --color-gold-400: #fbbf24;
-  --color-gold-500: #f59e0b;
-
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background: var(--color-navy-950);
-  color: #e2e8f0;
+  background: #ffffff;
+  color: #111827;
 }
 
-/* Custom scrollbar */
+.dark body {
+  background: #030712;
+  color: #f3f4f6;
+}
+
+/* ── Circular reveal theme transition ── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+  animation: theme-reveal 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0px at var(--tx) var(--ty));
+  }
+  to {
+    clip-path: circle(var(--tr) at var(--tx) var(--ty));
+  }
+}
+
+/* ── CTA button shimmer ── */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 33%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 67%
+  );
+  transform: translateX(-100%);
+}
+.shimmer:hover::after {
+  animation: shimmer-sweep 0.6s ease-out;
+}
+@keyframes shimmer-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* ── Flask bubble animation ── */
+@keyframes bubble-float {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-28px) scale(0.4);
+  }
+}
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: bubble-float 0.8s ease-out forwards;
+}
+
+/* ── Confetti particle ── */
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) rotate(var(--confetti-spin, 720deg)) scale(0.3);
+  }
+}
+.confetti-piece {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99999;
+  animation: confetti-fall var(--confetti-duration, 2.5s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* ── UCLA Bruin flash ── */
+@keyframes bruin-flash {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-navy-950);
+  background: #f9fafb;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-navy-700);
+  background: #d1d5db;
   border-radius: 4px;
 }
-
-/* Gradient text utility */
-.gradient-text {
-  background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #a78bfa 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.dark ::-webkit-scrollbar-track {
+  background: #030712;
 }
-
-/* Glow effect */
-.glow {
-  box-shadow: 0 0 60px rgba(99, 102, 241, 0.15), 0 0 120px rgba(99, 102, 241, 0.05);
-}
-
-/* Animated gradient border */
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.animated-border {
-  background: linear-gradient(90deg, #6366f1, #818cf8, #a78bfa, #6366f1);
-  background-size: 300% 100%;
-  animation: gradient-shift 4s ease infinite;
-}
-
-/* Grid pattern background */
-.grid-pattern {
-  background-image:
-    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
-  background-size: 64px 64px;
-}
-
-/* Noise texture overlay */
-.noise::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  pointer-events: none;
+.dark ::-webkit-scrollbar-thumb {
+  background: #374151;
 }
